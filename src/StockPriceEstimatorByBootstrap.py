@@ -18,7 +18,7 @@ steps = 24*day_per_month
 
 
 # %%
-pd_data = pd.read_csv('sample_data.csv',header=None)
+pd_data = pd.read_csv('sample_data_1.csv',header=None)
 raw_data= np.array(pd_data[0])
 
 log_data = np.log(raw_data)
