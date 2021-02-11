@@ -16,59 +16,46 @@ import matplotlib.pyplot as plt
 day_per_month = 20
 steps = 24*day_per_month
 
-# sample_number個の時系列データを生成し、株価の評価をする
+
+# %%
+pd_data = pd.read_csv('sample_data_1.csv',header=None)
+raw_data= np.array(pd_data[0])
+
+log_data = np.log(raw_data)
+# 日次収益率
+sample_rate= log_data[1:len(log_data)]-log_data[0:len(log_data)-1]
+
+
+# %%
 sample_number = 100000
 
-# %%
-# 株価の日次時系列データ
-pd_data_1 = pd.read_csv('sample_data_1.csv',header=None)
-raw_data_1= np.array(pd_data_1[0])
+price = np.ones(sample_number)*raw_data[len(raw_data)-1]
 
-log_data_1 = np.log(raw_data_1)
-# 日次収益率
-sample_rate_1= log_data_1[1:len(log_data_1)]-log_data_1[0:len(log_data_1)-1]
+x_avg = [price[0]]
+x_var = [price[0]]
+x_half = [price[0]]
+x_p = [price[0]]
+x_n = [price[0]]
 
-
-# %%
-price_1 = np.ones(sample_number)*raw_data_1[len(raw_data_1)-1]
-
-# sample_number個の株価データの平均値
-price_1_avg = [price_1[0]]
-# sample_number個の株価データの中間値
-price_1_half = [price_1[0]]
-# Value At Risk - 99%の確率で、株価はこれより高くなる
-price_1_var = [price_1[0]]
-# Average + 1 sigma相当 - 35%の確率で、株価はこれより高くなる
-price_1_p = [price_1[0]]
-# Average - 1 sigma相当 - 65%の確率で、株価はこれより高くなる
-price_1_n = [price_1[0]]
-
-t = [len(raw_data_1)-1]
+t = [len(raw_data)-1]
 for i in range(0,steps):
-    t.append(len(raw_data_1)+i)
-    # 変動率をサンプリング
-    index = np.random.randint(0,len(sample_rate_1),sample_number)
-    price_1 = (1+sample_rate_1[index])*price_1
+    t.append(len(raw_data)+i)
+    index = np.random.randint(0,len(sample_rate),sample_number)
+    price = (1+sample_rate[index])*price
 
-    price_1.sort()
-    # sample_number個の株価データの平均値
-    price_1_avg.append(np.average(price_1))
-    # sample_number個の株価データの中間値
-    price_1_half.append(price_1[int(0.5*sample_number)])
-    # Value At Risk - 99%の確率で、株価はこれより高くなる
-    price_1_var.append(price_1[int(0.01*sample_number)])
-    # Average + 1 sigma相当 - 35%の確率で、株価はこれより高くなる
-    price_1_n.append(price_1[int(0.35*sample_number)])
-    # Average - 1 sigma相当 - 65%の確率で、株価はこれより高くなる
-    price_1_p.append(price_1[int(0.65*sample_number)])
+    price.sort()
+    x_avg.append(np.average(price))
+    x_var.append(price[int(0.01*sample_number)])
+    x_half.append(price[int(0.5*sample_number)])
+    x_n.append(price[int(0.35*sample_number)])
+    x_p.append(price[int(0.65*sample_number)])
 
-plt.plot(raw_data_1 , label="raw data")
-plt.plot(t, price_1_avg , label="Average")
-plt.plot(t, price_1_half , label= "Half")
-plt.plot(t, price_1_var , label= "Value At Risk")
-plt.plot(t, price_1_p , label="+1 sigma")
-plt.plot(t, price_1_n , label="-1 Sigma")
-plt.legend()
+plt.plot(raw_data)
+plt.plot(t, x_avg)
+plt.plot(t, x_half)
+plt.plot(t, x_var)
+plt.plot(t, x_p)
+plt.plot(t, x_n)
 plt.show()
 
 
