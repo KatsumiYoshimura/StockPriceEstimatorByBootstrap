@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 day_per_month = 20
 steps = 24*day_per_month
 
+# %%
 # sample_number個の時系列データを生成し、株価の評価をする
 sample_number = 100000
 
